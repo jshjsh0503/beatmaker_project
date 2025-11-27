@@ -28,31 +28,38 @@ static int get_title_at(int tx, int ty){
 // ----------------------------------------
 
 // 게임 진행 중 로직 (플레이어 이동, 충돌 등)
-void ActGame(SDL_Event *event) {
-    if(event->type == SDL_QUIT){
+void ActGame(void) {
 
+    const double dt = 1.0 / 60.0; 
+
+    //좌우 이동속도
+    if(app.key_left && !app.key_right){
+        player.v_x = -MOVE_SPEED;
     }
-    else if(event->type == SDL_KEYDOWN && !event->key.repeat){
-        switch(event->key.keysym.sym){
-            case SDLK_LEFT:
-                app.key_left = 1;
-                break;
-            case SDLK_RIGHT:
-                app.key_right = 1;
-                break;
-
-            case SDLK_SPACE: //space 키를 눌렀을 때 중력 반전
-                player.gravity_inverted = !player.gravity_inverted;
-                //속도 반전
-                player.v_y = -player.v_y;
-                break;
-
-        }
+    else if(app.key_right && !app.key_left){
+        player.v_x = MOVE_SPEED;
     }
+    else{
+        player.v_x = 0.0;
+    }
+
+    //점프
+    if(app.key_up && player.is_grounded){
+        double jump_dir = player.gravity_inverted ? 1.0 : -1.0;
+        player.v_y = JUMP_SPEED * jump_dir;
+        player.is_grounded = 0;
+    }
+    //물리 업데이트 + 바닥/천장 충돌
+    update_player(dt);
+    resolve_vertical_collision();
+
+    //가시 충돌
+    check_spike_collision();
+ 
 }
 
 // 게임 오버 시 로직 (재시작 처리)
-void ActGameOver(SDL_Event *event) {
+void ActGameOver(void) {
     //죽은 상태에서만 호출됨
     if(app.key_r){
         //1.플레이어를 처음 상태로 되돌림
