@@ -3,7 +3,7 @@
 #include "init.h"
 #include<SDL2/SDL.h>
 
-#define GRAVITY 2000.0
+#define GRAVITY  3000.0
 #define JUMP_SPEED 900.0
 #define MOVE_SPEED 300.0
 
@@ -26,37 +26,6 @@ static int get_title_at(int tx, int ty){
 // ----------------------------------------
 // 액션(로직) 함수들
 // ----------------------------------------
-
-// 게임 진행 중 로직 (플레이어 이동, 충돌 등)
-void ActGame(void) {
-
-    const double dt = 1.0 / 60.0; 
-
-    //좌우 이동속도
-    if(app.key_left && !app.key_right){
-        player.v_x = -MOVE_SPEED;
-    }
-    else if(app.key_right && !app.key_left){
-        player.v_x = MOVE_SPEED;
-    }
-    else{
-        player.v_x = 0.0;
-    }
-
-    //점프
-    if(app.key_up && player.is_grounded){
-        double jump_dir = player.gravity_inverted ? 1.0 : -1.0;
-        player.v_y = JUMP_SPEED * jump_dir;
-        player.is_grounded = 0;
-    }
-    //물리 업데이트 + 바닥/천장 충돌
-    update_player(dt);
-    resolve_vertical_collision();
-
-    //가시 충돌
-    check_spike_collision();
- 
-}
 
 // 게임 오버 시 로직 (재시작 처리)
 void ActGameOver(void) {
@@ -178,3 +147,35 @@ void check_spike_collision(void){
         }
     }
 }
+
+// 게임 진행 중 로직 (플레이어 이동, 충돌 등)
+void ActGame(void) {
+
+    const double dt = 1.0 / 60.0; 
+
+    //좌우 이동속도
+    if(app.key_left && !app.key_right){
+        player.v_x = -MOVE_SPEED;
+    }
+    else if(app.key_right && !app.key_left){
+        player.v_x = MOVE_SPEED;
+    }
+    else{
+        player.v_x = 0.0;
+    }
+
+    //점프
+    if(app.key_up && player.is_grounded){
+        double jump_dir = player.gravity_inverted ? 1.0 : -1.0;
+        player.v_y = JUMP_SPEED * jump_dir;
+        player.is_grounded = 0;
+    }
+    //물리 업데이트 + 바닥/천장 충돌
+    update_player(dt);
+    resolve_vertical_collision();
+
+    //가시 충돌
+    check_spike_collision();
+ 
+}
+
