@@ -72,6 +72,34 @@ static void update_player(double dt){
     player.pos.y += (int)(player.v_y *dt);
 }
 
+static void move_player_horzontal(double dt){
+    int dir = 0;
+
+    //방향 결정: 왼쪽만 눌림 -> -1, 오른쪽만 눌림 -> +1, 둘 다/ 둘 다아님 ->0
+    if(app.key_left && !app.key_right){
+        dir = -1;
+    }
+    else if(app.key_right && !app.key_left){
+        dir = 1;
+    }
+    else{
+        dir = 0;
+    }
+
+    //속도 설정
+    player.v_x = dir * MOVE_SPEED;
+
+    //위치 업데이트
+    player.pos.x += (int)(player.v_x *dt);
+
+    //화면 밖으로 안나가게 클램프
+    if(player.pos.x < 0){
+        player.pos.x = 0;
+    }
+    if(player.pos.x + player.pos.w > SCREEN_WIDTH){
+        player.pos.x = SCREEN_WIDTH - player.pos.w;
+    }
+}
 void resolve_vertical_collision(void){
     
     if(!player.gravity_inverted){
@@ -152,7 +180,9 @@ void check_spike_collision(void){
 void ActGame(void) {
 
     const double dt = 1.0 / 60.0; 
-
+    
+    //좌우 이동
+    move_player_horzontal(dt);
     //좌우 이동속도
     if(app.key_left && !app.key_right){
         player.v_x = -MOVE_SPEED;
