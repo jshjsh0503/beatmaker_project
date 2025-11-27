@@ -21,9 +21,9 @@
 #define MAP_HEIGHT 10           // 맵의 세로 타일 개수
 
 // 타일 종류 정의 (0: 빈 공간, 1: 바닥, 2: 가시 등)
-#define TILE_EMPTY 0
-#define TILE_FLOOR 1
-#define TILE_SPIKE 2
+#define TILE_EMPTY 0          // 빈 공간 (투명)
+#define TILE_FLOOR 1          // 일반 바닥/벽 (밟을 수 있음)
+#define TILE_SPIKE 2          // 가시 함정 (밟으면 사망)
 
 // ----------------------------------------
 // 구조체 정의
