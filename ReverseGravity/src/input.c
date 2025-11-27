@@ -54,7 +54,7 @@ void ResponseKeyDown(SDL_KeyboardEvent *event) {
             case SDL_SCANCODE_RIGHT:
                 app.key_right = 1;
                 break;
-            case SDL_SCANCODE_R: // 중력 역전 기믹에 사용할 R 키
+            case SDL_SCANCODE_R: // 살아나는데 사용하는 코드
                 app.key_r = 1;
                 break;
             // ESC 키를 눌러도 종료되도록 처리 (옵션)
