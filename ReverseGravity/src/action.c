@@ -1,6 +1,9 @@
 // src/action.c (내용 전체 교체)
 #include "defs.h"
 
+#define GRAVITY 2000.0
+#define JUMP_SPEED 900.0
+
 // ----------------------------------------
 // 액션(로직) 함수들
 // ----------------------------------------
@@ -26,3 +29,111 @@ void ActBullet(void) {}
 void ActScoreBoard(void) {}
 void ActCheckDeath(void) {}
 
+// 키를 이용해 움직임
+void gravityINVERSE(SDL_Event *event){
+    if(event->type == SDL_QUIT){
+
+    }
+    else if(event->type == SDL_KEYDOWN && !event->key.repeat){
+        switch(event->key.keysym.sym){
+            case SDLK_LEFT:
+                app.key_left = 1;
+                break;
+            case SDLK_RIGHT:
+                app.key_right = 1;
+                break;
+
+            case SDLK_SPACE: //space 키를 눌렀을 때 중력 반전
+                player.gravity_inverted = !player.gravity_inverted;
+                //속도 반전
+                player.v_y = -player.v_y;
+                break;
+
+        }
+    }
+}
+
+void update_player(double dt){
+    double g_dir = player.gravity_inverted ? -1.0 : 1.0;
+
+    if(!player.is_grounded){
+        player.v_y += GRAVITY * g_dir * dt;
+    }
+    player.pos.y += (int)(player.v_y *dt);
+}
+
+void resolve_vertical_collision(void){
+    
+    if(!player.gravity_inverted){
+        //일반 중력 : 발이 바닥을 뚫지 않도록
+        if(player.pos.y + player.pos.h > ground_y){//ground_y는 발이 닿을 수 있는 바닥 높이
+            player.pos.y = ground_y - player.pos.h;
+            player.v_y = 0;
+            player.is_grounded = 1;
+        }
+        else{
+            //역중력: 머리가 천장을 뚫지 않도록
+            if(player.pos.y < ceiling_y){//ceiling_y 는 천장 높이
+                player.pos.y = ceiling_y;
+                player.v_y = 0;
+                player.is_grounded = 1;
+            }
+        }
+    }
+}
+
+//뒤집혔을 때 캐릭터 뒤집어서 그리기
+void draw_player(void){
+    SDL_Rect dst = player.pos;
+    SDL_RendererFlip flip = SDL_FLIP_NONE;
+
+    if(player.gravity_inverted){
+        flip = SDL_FLIP_VERTICAL;
+    }
+
+    SDL_RenderCopyEx(app.renderer, player.texture, NULL, &dst, 0.0, NULL, flip);
+}
+
+//죽었을 때 처리 함수
+void kill_player(void){
+    player.health = 0;
+    player.v_x = 0.0;
+    player.v_y = 0.0;
+
+    //죽는 효과음
+    if(death_effect){
+        Mix_PlayChannel(-1, death_effect, 0);
+    }
+
+    //바로 부활시키고 싶은 경우
+    player.pos.x = RESPAWN_X;
+    player.pos.y = RESPAEN_Y;
+    player.health = 1; //다시 살아남
+}
+void check_spike_collision(void){
+    //플레이어의 바운딩 박스(px 단위)
+    int x1 = player.pos.x;
+    int y1 = player.pos.y;
+    int x2 = player.pos.x + player.pos.w-1;
+    int y2 = player.pos.y + player.pos.h-1;
+
+    //모서리 네 점을 타일 좌표로 변환
+    int tx1 = x1 /TILE_SIZE;
+    int ty1 = y1 /TILE_SIZE;
+    int tx2 = x2 /TILE_SIZE;
+    int ty2 = y2 /TILE_SIZE;
+
+    //네 모서리:(tx1,ty1), (tx1,ty2), (tx2,ty1), (tx2, ty2)
+    int tiles_x[2] = {tx1, tx2};
+    int tiles_y[2] = {ty1, ty2};
+    
+    for(int iy = 0; iy < 2; ++iy){
+        for(int ix = 0;ix < 2 ; ++ix){
+            int t = get_title_at(tiles_x[ix], tiles_y[iy]);
+            if(t == TILE_SPIKE){
+                kill_player();
+                return;
+            }
+        }
+    }
+}
