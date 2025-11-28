@@ -31,6 +31,9 @@ void ResponseKeyUp(SDL_KeyboardEvent *event) {
                 app.key_r = 0;
                 break;
             // 다른 키가 있다면 여기에 추가
+            case SDL_SCANCODE_SPACE:
+                app.key_space = 0;
+                break;
             default:
                 break;
         }
@@ -57,7 +60,8 @@ void ResponseKeyDown(SDL_KeyboardEvent *event) {
             case SDL_SCANCODE_R: // 살아나는데 사용하는 코드
                 app.key_r = 1;
                 break;
-            case SDLK_SPACE:
+            case SDL_SCANCODE_SPACE:
+                app.key_space = 1;
                 player.gravity_inverted = !player.gravity_inverted;
                 player.v_y = -player.v_y;
                 break;

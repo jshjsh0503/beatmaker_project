@@ -40,6 +40,7 @@ typedef struct {
     int key_left;
     int key_right;
     int key_r;
+    int key_space;
 } App;
 
 // Entity: 주인공의 상태를 저장하기 위한 구조체

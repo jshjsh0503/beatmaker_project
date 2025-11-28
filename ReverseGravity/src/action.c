@@ -63,7 +63,7 @@ void ActCheckDeath(void) {}
 
 //플레이어 물리 업데이트(중력)
 
-static void update_player(double dt){
+static void gravity_inverted(double dt){
     double g_dir = player.gravity_inverted ? -1.0 : 1.0;
 
     if(!player.is_grounded){
@@ -201,7 +201,7 @@ void ActGame(void) {
         player.is_grounded = 0;
     }
     //물리 업데이트 + 바닥/천장 충돌
-    update_player(dt);
+    gravity_inverted(dt);
     resolve_vertical_collision();
 
     //가시 충돌
