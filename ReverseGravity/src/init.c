@@ -6,6 +6,8 @@
 #include "defs.h"
 #include "init.h"
 
+Mix_Chunk* death_effect = NULL;
+
 // ----------------------------------------
 // 전역 변수 초기화 함수
 // ----------------------------------------
@@ -34,7 +36,7 @@ static void load_tile_texture(SDL_Texture** tex_ptr, const char* path) {
 // ----------------------------------------
 void InitSDL(void) {
     // 1. 기본 SDL 및 창/렌더러 초기화
-    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) {
         printf("SDL 초기화 실패: %s\n", SDL_GetError());
         exit(1);
     }
@@ -56,6 +58,20 @@ void InitSDL(void) {
     load_tile_texture(&g_tile_textures[TILE_SPIKE], "./gfx/spike.png");
     
     printf("Tiles loaded successfully.\n");
+
+    // 4. SDL_mixer 초기화
+    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
+        printf("SDL_mixer 초기화 실패: %s\n", Mix_GetError());
+        exit(1);
+    }
+
+    // 5. 사운드 로드
+    death_effect = Mix_LoadWAV("sound/deathsound.wav");
+    if (!death_effect) {
+        printf("deathsound.mp3 로드 실패: %s\n", Mix_GetError());
+        exit(1);
+    }
+    printf("Death sound loaded successfully.\n");
 }
 
 // ----------------------------------------

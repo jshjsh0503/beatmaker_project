@@ -16,7 +16,7 @@
 App app;
 Entity player;
 Mix_Music *bgm;
-Mix_Chunk *death_effect;
+extern Mix_Chunk *death_effect;
 
 // 타일 텍스처 배열 정의 (defs.h에서 extern으로 선언됨)
 SDL_Texture* g_tile_textures[3] = {NULL};
