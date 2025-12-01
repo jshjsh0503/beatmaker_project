@@ -6,3 +6,4 @@
 void GetInput(void);
 void ResponseKeyUp(SDL_KeyboardEvent *event);
 void ResponseKeyDown(SDL_KeyboardEvent *event);
+void handle_input(void);

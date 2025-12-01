@@ -2,6 +2,8 @@
 #include <SDL2/SDL.h>
 #include <stdlib.h> // exit() 사용
 #include "defs.h"
+#include "input.h"
+#include "player_draw.h"
 
 // SDL_QUIT 이벤트를 처리하고 프로그램을 종료합니다.
 static void QuitSDL(void) {
@@ -15,12 +17,12 @@ void ResponseKeyUp(SDL_KeyboardEvent *event) {
     if (event->repeat == 0) {
         SDL_Scancode key_input = event->keysym.scancode;
         switch (key_input) {
-            case SDL_SCANCODE_UP:
-                app.key_up = 0;
-                break;
-            case SDL_SCANCODE_DOWN:
-                app.key_down = 0;
-                break;
+            // case SDL_SCANCODE_UP:
+            //     app.key_up = 0;
+            //     break;
+            // case SDL_SCANCODE_DOWN:
+            //     app.key_down = 0;
+            //     break;
             case SDL_SCANCODE_LEFT:
                 app.key_left = 0;
                 break;
@@ -45,12 +47,12 @@ void ResponseKeyDown(SDL_KeyboardEvent *event) {
     if (event->repeat == 0) { // 키를 길게 눌러 반복되는 이벤트는 무시
         SDL_Scancode key_input = event->keysym.scancode;
         switch (key_input) {
-            case SDL_SCANCODE_UP:
-                app.key_up = 1;
-                break;
-            case SDL_SCANCODE_DOWN:
-                app.key_down = 1;
-                break;
+            // case SDL_SCANCODE_UP:
+            //     app.key_up = 1;
+            //     break;
+            // case SDL_SCANCODE_DOWN:
+            //     app.key_down = 1;
+            //     break;
             case SDL_SCANCODE_LEFT:
                 app.key_left = 1;
                 break;
@@ -62,8 +64,23 @@ void ResponseKeyDown(SDL_KeyboardEvent *event) {
                 break;
             case SDL_SCANCODE_SPACE:
                 app.key_space = 1;
+
+                // player.gravity_inverted = !player.gravity_inverted;
+                // player.v_y = -player.v_y;
+                // player.gravity_inverted = !player.gravity_inverted;
+                if (!player.is_grounded)
+                break;
+
+                // 2) 중력 반전 (단 한 번만!)
                 player.gravity_inverted = !player.gravity_inverted;
+
+                // 3) 속도 반전 (위 → 아래 / 아래 → 위)
                 player.v_y = -player.v_y;
+
+                // 4) 이제 player.is_grounded 는 false 로 설정
+                //    플레이어는 점프처럼 떠오를 것이기 때문
+                player.is_grounded = 0;
+
                 break;
             // ESC 키를 눌러도 종료되도록 처리 (옵션)
             case SDL_SCANCODE_ESCAPE:
