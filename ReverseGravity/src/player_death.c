@@ -10,4 +10,5 @@ void kill_player(void)
 
     if (death_effect)
         Mix_PlayChannel(-1, death_effect, 0);
+    game_state = STATE_GAMEOVER;
 }

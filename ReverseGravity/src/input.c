@@ -36,6 +36,28 @@ void ResponseKeyUp(SDL_KeyboardEvent *event) {
             case SDL_SCANCODE_SPACE:
                 app.key_space = 0;
                 break;
+
+            case SDL_SCANCODE_UP:
+            // 기존 key_up = 1 → 중력 문제 발생하므로 제거
+                if (game_state == STATE_TITLE)
+                    app.menu_up = 0;
+                else
+                    app.key_up = 0;
+                    break;
+
+            case SDL_SCANCODE_DOWN:
+                if (game_state == STATE_TITLE)
+                    app.menu_down = 0;
+                else
+                    app.key_down = 0;
+                break;
+
+            case SDL_SCANCODE_RETURN:
+                if (game_state == STATE_TITLE)
+                    app.menu_enter = 0;
+                else
+                    app.key_enter = 0;
+                break;
             default:
                 break;
         }
@@ -60,7 +82,8 @@ void ResponseKeyDown(SDL_KeyboardEvent *event) {
                 app.key_right = 1;
                 break;
             case SDL_SCANCODE_R: // 살아나는데 사용하는 코드
-                app.key_r = 1;
+                if (game_state != STATE_TITLE)
+                    app.key_r = 1;
                 break;
             case SDL_SCANCODE_SPACE:
                 app.key_space = 1;
@@ -85,6 +108,27 @@ void ResponseKeyDown(SDL_KeyboardEvent *event) {
             // ESC 키를 눌러도 종료되도록 처리 (옵션)
             case SDL_SCANCODE_ESCAPE:
                 QuitSDL();
+                break;
+            case SDL_SCANCODE_UP:
+            // 기존 key_up = 1 → 중력 문제 발생하므로 제거
+                if (game_state == STATE_TITLE)
+                    app.menu_up = 1;
+                // else
+                //     app.key_up = 1;
+                    break;
+
+            case SDL_SCANCODE_DOWN:
+                if (game_state == STATE_TITLE)
+                    app.menu_down = 1;
+                // else
+                //     app.key_down = 1;
+                break;
+
+            case SDL_SCANCODE_RETURN:
+                if (game_state == STATE_TITLE)
+                    app.menu_enter = 1;
+                else
+                    app.key_enter = 1;
                 break;
             default:
                 break;
@@ -112,4 +156,18 @@ void GetInput(void) {
                 break;
         }
     }
+}
+
+void ResetInputFlags(void)
+{
+    app.key_up = 0;
+    app.key_down = 0;
+    app.key_left = 0;
+    app.key_right = 0;
+    app.key_space = 0;
+    app.key_enter = 0;
+
+    app.menu_up = 0;
+    app.menu_down = 0;
+    app.menu_enter = 0;
 }

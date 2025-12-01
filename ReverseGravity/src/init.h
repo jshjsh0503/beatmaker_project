@@ -2,6 +2,9 @@
 
 #include <SDL2/SDL.h>
 
+extern SDL_Renderer* renderer;
+void QuitSDL(void);
+
 /**
  * @brief 전역 변수를 0으로 초기화합니다.
  */

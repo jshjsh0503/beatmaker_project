@@ -8,18 +8,19 @@
 #include "draw.h"
 #include "action.h"
 #include "input.h"
+#include "scene_title.h"
 
 
 // ----------------------------------------
 // 전역 변수 정의
 // ----------------------------------------
-App app;
-Entity player;
+// App app;
+// Entity player;
 Mix_Music *bgm;
 extern Mix_Chunk *death_effect;
 
 // 타일 텍스처 배열 정의 (defs.h에서 extern으로 선언됨)
-SDL_Texture* g_tile_textures[3] = {NULL};
+// SDL_Texture* g_tile_textures[3] = {NULL};
 
 // 맵 데이터 정의 (defs.h에서 extern으로 선언됨)
 // 0: 빈 공간, 1: 바닥, 2: 가시
@@ -41,7 +42,7 @@ int g_map_data[MAP_HEIGHT][MAP_WIDTH] = {
     // ----------------------------------------------------
 };
 
-
+    GameState game_state = STATE_TITLE;
 // ----------------------------------------
 // 메인 함수
 // ----------------------------------------
@@ -49,23 +50,50 @@ int main(void) {
     // 1. 초기화 (이 함수를 찾지 못하고 있습니다.)
     InitMemorySet(); 
     InitSDL();
-    InitPlayer();   
+    InitPlayer();
+
+
+    title_init();    
     
     // 2. 프로그램 무한 루프 (메인 게임 루프)
     for (;;) {
         ClearWindow();
         GetInput();
 
-        // 게임 진행 로직
-        if (player.health) { 
+        // // 게임 진행 로직
+        // if (player.health) { 
+        //     ActGame();
+        //     DrawGame();
+        // } else {
+        //     ActGameOver();
+        //     DrawGameOver();
+        // }
+
+        // ShowWindow();
+        // SDL_Delay(16);
+        switch (game_state) {
+
+        case STATE_TITLE:
+            title_update();      // ← scene_title.c에 구현
+            title_render();
+            break;
+
+        case STATE_GAME:
             ActGame();
             DrawGame();
-        } else {
+            break;
+
+        case STATE_GAMEOVER:
             ActGameOver();
             DrawGameOver();
+            break;
+
+        case STATE_EXIT:
+            QuitSDL();
+            exit(0);
         }
 
-        ShowWindow();
+        ShowWindow();   // ★★★ 반드시 필요
         SDL_Delay(16);
     }
     

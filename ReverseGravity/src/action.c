@@ -39,5 +39,7 @@ void ActGameOver(void) {
         app.key_r = 0;
         app.key_right = 0;
         app.key_up = 0;
+        app.key_r = 0;
+        game_state = STATE_GAME;
     }
 }

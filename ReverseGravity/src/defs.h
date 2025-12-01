@@ -41,6 +41,11 @@ typedef struct {
     int key_right;
     int key_r;
     int key_space;
+    int key_enter;
+
+    int menu_up;
+    int menu_down;
+    int menu_enter;
 } App;
 
 // Entity: 주인공의 상태를 저장하기 위한 구조체
@@ -81,3 +86,14 @@ extern SDL_Texture* g_tile_textures[3]; // TILE_EMPTY, TILE_FLOOR, TILE_SPIKE �
 // 링커 오류 방지를 위해 임시로 Mix_Chunk, TTF_Font 포인터 선언
 // 이 부분을 지우면 컴파일 오류가 날 수 있습니다.
 // ----------------------------------------
+
+typedef enum {
+    STATE_TITLE,
+    STATE_GAME,
+    STATE_GAMEOVER,
+    STATE_EXIT
+} GameState;
+
+extern GameState game_state;
+
+void ResetInputFlags(void);

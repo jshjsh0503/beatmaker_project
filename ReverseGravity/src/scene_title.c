@@ -1,0 +1,86 @@
+#include "scene_title.h"
+#include "defs.h"
+#include "init.h"
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
+
+extern App app;
+extern TTF_Font* font_normal;
+extern TTF_Font* font_selected;
+
+SDL_Texture* title_image = NULL;
+int menu_index = 0;   // 0 = START, 1 = EXIT
+
+void title_init()
+{
+    title_image = IMG_LoadTexture(app.renderer, "gfx/titlescreen.png");
+    if (!title_image) {
+        printf("Title image load failed: %s\n", IMG_GetError());
+        exit(1);
+    }
+
+    menu_index = 0;
+}
+
+void title_update()
+{
+    // ===== 메뉴 이동 =====
+    if (app.menu_up) {
+        if (menu_index > 0) menu_index--;
+        app.menu_up = 0;   // ★ key_up이 아니라 menu_up을 리셋해야 함
+    }
+
+    if (app.menu_down) {
+        if (menu_index < 1) menu_index++;
+        app.menu_down = 0; // ★ key_down이 아니라 menu_down 리셋
+    }
+
+    // ===== 메뉴 선택 =====
+    if (app.menu_enter || app.key_space) {
+
+        if (menu_index == 0){
+            ResetInputFlags();     // ← 안전하게 입력만 초기화
+            game_state = STATE_GAME;
+        }
+        else
+            game_state = STATE_EXIT;
+
+        app.menu_enter = 0;   // ★ menu_enter 리셋
+        app.key_space = 0;
+    }
+}
+
+void title_render()
+{
+    SDL_RenderCopy(app.renderer, title_image, NULL, NULL);
+
+    SDL_Color normal   = {255, 255, 255, 255};
+    SDL_Color selected = {255, 255, 0, 255};
+
+    // START
+    TTF_Font* font_s = (menu_index == 0 ? font_selected : font_normal);
+    SDL_Color col_s  = (menu_index == 0 ? selected : normal);
+
+    SDL_Surface* s_start = TTF_RenderText_Solid(font_s, "START", col_s);
+    SDL_Texture* tex_start = SDL_CreateTextureFromSurface(app.renderer, s_start);
+
+    // EXIT
+    TTF_Font* font_e = (menu_index == 1 ? font_selected : font_normal);
+    SDL_Color col_e  = (menu_index == 1 ? selected : normal);
+
+    SDL_Surface* s_exit = TTF_RenderText_Solid(font_e, "EXIT", col_e);
+    SDL_Texture* tex_exit = SDL_CreateTextureFromSurface(app.renderer, s_exit);
+
+    // 위치 설정
+    SDL_Rect r_start = { 240, 300, s_start->w, s_start->h };
+    SDL_Rect r_exit  = { 240, 360, s_exit->w, s_exit->h };
+
+    SDL_RenderCopy(app.renderer, tex_start, NULL, &r_start);
+    SDL_RenderCopy(app.renderer, tex_exit, NULL, &r_exit);
+
+    SDL_FreeSurface(s_start);
+    SDL_FreeSurface(s_exit);
+
+    SDL_DestroyTexture(tex_start);
+    SDL_DestroyTexture(tex_exit);
+}
