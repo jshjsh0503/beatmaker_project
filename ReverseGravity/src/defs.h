@@ -9,16 +9,16 @@
 // ----------------------------------------
 // 창 및 전역 설정
 // ----------------------------------------
-#define SCREEN_WIDTH 1280       // 20 tiles * 64 pixels
-#define SCREEN_HEIGHT 640       // 10 tiles * 64 pixels
+#define SCREEN_WIDTH 1600       // 20 tiles * 64 pixels
+#define SCREEN_HEIGHT 1280       // 10 tiles * 64 pixels
 #define BUFSIZE 1024
 
 // ----------------------------------------
 // 맵 및 타일 관련 상수
 // ----------------------------------------
 #define TILE_SIZE 64            // 타일의 가로/세로 픽셀 크기
-#define MAP_WIDTH 20            // 맵의 가로 타일 개수
-#define MAP_HEIGHT 10           // 맵의 세로 타일 개수
+#define MAP_WIDTH 25            // 맵의 가로 타일 개수
+#define MAP_HEIGHT 20           // 맵의 세로 타일 개수
 
 // 타일 종류 정의 (0: 빈 공간, 1: 바닥, 2: 가시 등)
 #define TILE_EMPTY 0          // 빈 공간 (투명)

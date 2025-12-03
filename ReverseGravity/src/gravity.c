@@ -3,7 +3,7 @@
 #include "gravity.h"
 #include "player_collision.h"
 
-#define GRAVITY 3000.0
+#define GRAVITY 4500.0
 #define GROUND_Y (SCREEN_HEIGHT - TILE_SIZE)
 #define CEILING_Y 0
 
