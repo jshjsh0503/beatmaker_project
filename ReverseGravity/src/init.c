@@ -122,6 +122,7 @@ void InitTiles(void) {}*/
 #include "defs.h"
 #include "init.h"
 
+Mix_Music* interface_bgm = NULL;
 Mix_Chunk* death_effect = NULL;
 
 // 전역 변수 정의
@@ -205,6 +206,11 @@ void InitSDL(void) {
     if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
         printf("SDL_mixer 초기화 실패: %s\n", Mix_GetError());
         exit(1);
+    }
+
+    interface_bgm = Mix_LoadMUS("sound/interfaceBGM.mp3");
+    if (!interface_bgm) {
+        printf("interface.mp3 로드 실패: %s\n", Mix_GetError());
     }
 
     death_effect = Mix_LoadWAV("sound/deathsound.wav");

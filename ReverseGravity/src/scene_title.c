@@ -7,6 +7,7 @@
 extern App app;
 extern TTF_Font* font_normal;
 extern TTF_Font* font_selected;
+extern Mix_Music* interface_bgm;
 
 SDL_Texture* title_image = NULL;
 int menu_index = 0;   // 0 = START, 1 = EXIT
@@ -20,6 +21,8 @@ void title_init()
     }
 
     menu_index = 0;
+
+    Mix_PlayMusic(interface_bgm, -1);
 }
 
 void title_update()
@@ -39,6 +42,7 @@ void title_update()
     if (app.menu_enter || app.key_space) {
 
         if (menu_index == 0){
+            Mix_HaltMusic();       // ★ 타이틀 음악 정지
             ResetInputFlags();     // ← 안전하게 입력만 초기화
             game_state = STATE_GAME;
         }
