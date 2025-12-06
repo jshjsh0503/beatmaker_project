@@ -100,6 +100,7 @@ typedef enum {
     STATE_TITLE,
     STATE_GAME,
     STATE_GAMEOVER,
+    STATE_ENDING,
     STATE_EXIT
 } GameState;
 

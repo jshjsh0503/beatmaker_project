@@ -2,6 +2,7 @@
 #include "init.h"
 #include "player_collision.h"
 #include "player_death.h"
+#include "scene_title.h"
 
 int get_tile_at(int tx, int ty)
 {
@@ -148,5 +149,23 @@ void check_spike_collision(void)
                 return;
             }
         }
+    }
+}
+
+void check_goal_reach(void)
+{
+    int tx1 = player.pos.x / TILE_SIZE;
+    int ty1 = player.pos.y / TILE_SIZE;
+    int tx2 = (player.pos.x + player.pos.w) / TILE_SIZE;
+    int ty2 = (player.pos.y + player.pos.h) / TILE_SIZE;
+
+    // 플레이어 네 모서리가 goal에 닿았는지 검사
+    if (g_map_data[ty1][tx1] == TILE_GOAL ||
+        g_map_data[ty1][tx2] == TILE_GOAL ||
+        g_map_data[ty2][tx1] == TILE_GOAL ||
+        g_map_data[ty2][tx2] == TILE_GOAL)
+    {
+        InitEnding();            // ending.png 로드
+        game_state = STATE_ENDING;
     }
 }

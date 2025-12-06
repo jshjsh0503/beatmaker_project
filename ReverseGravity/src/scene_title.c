@@ -10,6 +10,8 @@ extern TTF_Font* font_selected;
 extern Mix_Music* interface_bgm;
 
 SDL_Texture* title_image = NULL;
+SDL_Texture* ending_texture = NULL;
+
 int menu_index = 0;   // 0 = START, 1 = EXIT
 
 void title_init()
@@ -87,4 +89,19 @@ void title_render()
 
     SDL_DestroyTexture(tex_start);
     SDL_DestroyTexture(tex_exit);
+}
+
+void InitEnding(void)
+{
+    ending_texture = IMG_LoadTexture(app.renderer, "./gfx/ending.png");
+    if (!ending_texture)
+    {
+        printf("Error loading ending.png: %s\n", IMG_GetError());
+    }
+}
+
+void DrawEnding(void)
+{
+    SDL_Rect dest = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
+    SDL_RenderCopy(app.renderer, ending_texture, NULL, &dest);
 }

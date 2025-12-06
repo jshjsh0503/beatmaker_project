@@ -82,24 +82,33 @@ int main(void) {
     
     // 2. 프로그램 무한 루프 (메인 게임 루프)
     for (;;) {
-        ClearWindow();
-        GetInput();
+    ClearWindow();
 
-        // // 게임 진행 로직
-        // if (player.health) { 
-        //     ActGame();
-        //     DrawGame();
-        // } else {
-        //     ActGameOver();
-        //     DrawGameOver();
-        // }
+    // ★ ENDING 상태에서는 ESC만 받는다
+    if (game_state == STATE_ENDING) 
+    {
+        SDL_Event event;
+        while (SDL_PollEvent(&event))
+        {
+            if (event.type == SDL_QUIT)
+                QuitSDL();
 
-        // ShowWindow();
-        // SDL_Delay(16);
-        switch (game_state) {
+            if (event.type == SDL_KEYDOWN &&
+                event.key.keysym.scancode == SDL_SCANCODE_ESCAPE)
+            {
+                QuitSDL();     // 또는 game_state = STATE_EXIT;
+            }
+        }
+    }
+    else 
+    {
+        GetInput();  // 평소 입력 처리
+    }
 
+    switch (game_state) 
+    {
         case STATE_TITLE:
-            title_update();      // ← scene_title.c에 구현
+            title_update();
             title_render();
             break;
 
@@ -113,14 +122,18 @@ int main(void) {
             DrawGameOver();
             break;
 
+        case STATE_ENDING:
+            DrawEnding();
+            break;
+
         case STATE_EXIT:
             QuitSDL();
             exit(0);
-        }
-
-        ShowWindow();   // ★★★ 반드시 필요
-        SDL_Delay(16);
     }
+
+    ShowWindow();
+    SDL_Delay(16);
+}
     
     return 0;
 }

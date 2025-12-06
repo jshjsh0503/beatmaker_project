@@ -51,6 +51,7 @@ void ActGame(void)
     resolve_vertical_collision();
 
     check_spike_collision();
+    check_goal_reach();
 }
 
 void ActGameOver(void) {

@@ -135,6 +135,7 @@ SDL_Texture* g_tile_textures[10];
 SDL_Texture* player_texture_normal = NULL;
 SDL_Texture* player_texture_reverse = NULL;
 
+
 // 폰트 전역 정의 (scene_title.c 에서 extern)
 TTF_Font* font_normal = NULL;
 TTF_Font* font_selected = NULL;
@@ -175,7 +176,7 @@ void InitSDL(void) {
     if (!app.window) { printf("창 생성 실패: %s\n", SDL_GetError()); exit(1); }
 
     // 렌더러 생성
-    app.renderer = SDL_CreateRenderer(app.window,-1,SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+    app.renderer = SDL_CreateRenderer(app.window, -1, SDL_RENDERER_ACCELERATED);
 
     if (!app.renderer) { printf("렌더러 생성 실패: %s\n", SDL_GetError()); exit(1); }
 
@@ -209,7 +210,7 @@ void InitSDL(void) {
     load_tile_texture(&g_tile_textures[TILE_START], "./gfx/StartPoint.png");
 
     // 사운드 초기화
-    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 8192) < 0) {
+    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
         printf("SDL_mixer 초기화 실패: %s\n", Mix_GetError());
         exit(1);
     }
