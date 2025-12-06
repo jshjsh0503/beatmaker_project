@@ -62,12 +62,14 @@ void ActGameOver(void) {
         player.v_y = 0.0;
         player.is_grounded = 0;
 
-        app.key_down = 0;
-        app.key_left = 0;
-        app.key_r = 0;
-        app.key_right = 0;
-        app.key_up = 0;
-        app.key_r = 0;
+        // app.key_down = 0;
+        // app.key_left = 0;
+        // app.key_r = 0;
+        // app.key_right = 0;
+        // app.key_up = 0;
+        // app.key_r = 0;
+
+        ResetInputFlags();   // ← ★ 모든 입력을 한 번에 초기화 (가장 안전함)
         game_state = STATE_GAME;
     }
 }
