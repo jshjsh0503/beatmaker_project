@@ -1,3 +1,4 @@
+// src/main.c
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -15,16 +16,14 @@ Mix_Music *bgm;
 extern Mix_Chunk *death_effect;
 
 
-
 GameState game_state = STATE_TITLE;
 
 int main(void) {
     InitMemorySet(); 
     InitSDL();
     LoadRoom(0, 0);     // ★ 먼저 방을 로드해야 함
-    InitPlayer();        // ★ 그 다음 StartPoint 인식 가능
-    title_init(); 
-   
+    InitPlayer();
+    title_init();    
     
     for (;;) {
         ClearWindow();

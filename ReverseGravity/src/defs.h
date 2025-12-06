@@ -1,3 +1,4 @@
+// src/defs.h
 #pragma once
 
 #include <SDL2/SDL.h>
@@ -22,12 +23,15 @@
 #define PLAYER_WIDTH  64
 #define PLAYER_HEIGHT 64
 
-// ★ 타일 종류 정의 (여기에 3번 추가!)
+// ★ 타일 종류 정의 (4번, 5번 추가)
 #define TILE_EMPTY 0          
 #define TILE_FLOOR 1          
-#define TILE_SPIKE 2          
-#define TILE_SPIKE_REVERSE 3  // <--- [추가] 3번은 역방향 가시
-
+#define TILE_SPIKE 2          // 바닥 가시 (위쪽 방향)
+#define TILE_SPIKE_REVERSE 3  // 천장 가시 (아래쪽 방향)
+#define TILE_SPIKE_LEFT 4     // 왼쪽 벽 가시 (오른쪽 방향)
+#define TILE_SPIKE_RIGHT 5    // 오른쪽 벽 가시 (왼쪽 방향)
+#define TILE_CHECKPOINT 6     // 깃발 (체크포인트)
+#define TILE_GRAVITY_STRING 7 // 중력 반전 실
 #define TILE_START 8
 #define TILE_GOAL 9   
 
@@ -58,8 +62,14 @@ typedef struct {
     double v_x;             
     double v_y;             
     int health;             
+    
     int is_grounded;        
     int gravity_inverted;   
+
+    // ★ [추가] 체크포인트 및 기믹용 변수
+    int checkpoint_x;       // 저장된 부활 위치 X
+    int checkpoint_y;       // 저장된 부활 위치 Y
+    double gravity_cooldown; // 중력 반전 쿨타임 (초 단위)
 } Entity;
 
 typedef struct {

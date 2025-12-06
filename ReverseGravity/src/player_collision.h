@@ -5,3 +5,4 @@ int check_wall_collision(void);
 void resolve_horizontal_collision(void);
 void resolve_vertical_tile_collision(void);
 void check_goal_reach(void);
+void check_interactive_tiles(void); // ★ [추가]
