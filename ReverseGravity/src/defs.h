@@ -107,3 +107,10 @@ typedef enum {
 extern GameState game_state;
 
 void ResetInputFlags(void);
+
+typedef struct {
+    int x;  // 왼쪽 상단 X
+    int y;  // 왼쪽 상단 Y
+} Camera;
+
+extern Camera camera;

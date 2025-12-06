@@ -128,6 +128,7 @@ Mix_Chunk* death_effect = NULL;
 // 전역 변수 정의
 App app;
 Entity player;
+Camera camera = {0, 0};
 
 // 타일 텍스처 전역 정의 (defs.h 에 extern 있음)
 SDL_Texture* g_tile_textures[10];

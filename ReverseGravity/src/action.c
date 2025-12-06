@@ -52,6 +52,14 @@ void ActGame(void)
 
     check_spike_collision();
     check_goal_reach();
+    // ---------------------------------------
+    // 카메라 방 이동 처리
+    // ---------------------------------------
+    int room_x = player.pos.x / SCREEN_WIDTH;
+    int room_y = player.pos.y / SCREEN_HEIGHT;
+
+    camera.x = room_x * SCREEN_WIDTH;
+    camera.y = room_y * SCREEN_HEIGHT;
 }
 
 void ActGameOver(void) {

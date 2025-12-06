@@ -27,10 +27,19 @@ void DrawMap(void) {
             // 빈 공간(0)이 아니며 텍스처가 로드되었을 경우에만 그림
             if (tile_type != TILE_EMPTY && texture_to_draw != NULL) {
                 // 2. 그려질 화면상의 위치 계산
-                destRect.x = x * TILE_SIZE;
-                destRect.y = y * TILE_SIZE;
+                // destRect.x = x * TILE_SIZE;
+                // destRect.y = y * TILE_SIZE;
                 
-                // 3. 텍스처를 렌더러에 복사 (화면에 그리기)
+                // // 3. 텍스처를 렌더러에 복사 (화면에 그리기)
+                // SDL_RenderCopy(app.renderer, texture_to_draw, NULL, &destRect);
+                destRect.x = x * TILE_SIZE - camera.x;
+                destRect.y = y * TILE_SIZE - camera.y;
+
+                if (destRect.x + TILE_SIZE < 0) continue;
+                if (destRect.x > SCREEN_WIDTH) continue;
+                if (destRect.y + TILE_SIZE < 0) continue;
+                if (destRect.y > SCREEN_HEIGHT) continue;
+
                 SDL_RenderCopy(app.renderer, texture_to_draw, NULL, &destRect);
             }
         }
@@ -84,11 +93,20 @@ void DrawGameOver(void)
     SDL_DestroyTexture(texture);
 }
 
-// RenderEntity 함수 (SDL_RenderCopy를 호출하는 핵심 함수)
-void RenderEntity(Entity *object) {
-    SDL_RenderCopy(app.renderer, object->texture, NULL, &(object->pos));
-    return;
+// // RenderEntity 함수 (SDL_RenderCopy를 호출하는 핵심 함수)
+// void RenderEntity(Entity *object) {
+//     SDL_RenderCopy(app.renderer, object->texture, NULL, &(object->pos));
+//     return;
+// }
+void RenderEntity(Entity *object)
+{
+    SDL_Rect r = object->pos;
+    r.x -= camera.x;
+    r.y -= camera.y;
+
+    SDL_RenderCopy(app.renderer, object->texture, NULL, &r);
 }
+
 // 렌더러를 초기 색상으로 지웁니다 (렌더링 시작)
 void ClearWindow(void) {
     // 검은색으로 화면을 지우도록 설정
