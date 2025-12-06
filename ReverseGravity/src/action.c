@@ -13,7 +13,7 @@ void ActGame(void)
     const double dt = 1.0 / 60.0;
 
     // ---------------------------------------
-    // 중력 반전 (SPACE 사용)
+    // 중력 반전 (SPACE)
     // ---------------------------------------
     if (app.key_space && player.is_grounded)
     {
@@ -24,7 +24,7 @@ void ActGame(void)
         else
             player.texture = player_texture_normal;
 
-        app.key_space = 0;   // SPACE 입력 초기화
+        app.key_space = 0;
     }
 
     // ---------------------------------------
@@ -33,7 +33,7 @@ void ActGame(void)
     move_player_horzontal(dt);
 
     // ---------------------------------------
-    // 점프 (DOWN 사용)
+    // 점프
     // ---------------------------------------
     if (app.key_down && player.is_grounded)
     {
@@ -41,26 +41,33 @@ void ActGame(void)
         player.v_y = JUMP_SPEED * jump_dir;
         player.is_grounded = 0;
 
-        app.key_down = 0;  // 점프 입력 초기화
+        app.key_down = 0;
     }
 
     // ---------------------------------------
-    // 중력 및 충돌 처리
+    // 중력 및 충돌
     // ---------------------------------------
     gravity_inverted(dt);
     resolve_vertical_collision();
 
     check_spike_collision();
     check_goal_reach();
-    // ---------------------------------------
-    // 카메라 방 이동 처리
-    // ---------------------------------------
+
+    // ---------------------------------------------------------
+    // ★★★ 화면 밖 이동 → 방 전환 처리 (여기 추가해야 했음)
+    // ---------------------------------------------------------
+    UpdatePlayer();   // ← 반드시 여기 추가해야 방 이동이 됨!!!
+
+    // ---------------------------------------------------------
+    // 카메라 이동
+    // ---------------------------------------------------------
     int room_x = player.pos.x / SCREEN_WIDTH;
     int room_y = player.pos.y / SCREEN_HEIGHT;
 
     camera.x = room_x * SCREEN_WIDTH;
     camera.y = room_y * SCREEN_HEIGHT;
 }
+
 
 void ActGameOver(void) {
     if(app.key_r){
