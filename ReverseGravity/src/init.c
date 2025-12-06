@@ -9,6 +9,7 @@
 
 #include "defs.h"
 #include "init.h"
+#include "map.h"
 
 Mix_Music* interface_bgm = NULL;
 Mix_Chunk* death_effect = NULL;
@@ -189,6 +190,8 @@ void InitPlayer(void) {
     // ★ [추가] 게임 시작 시 체크포인트를 현재 시작 위치로 설정
     player.checkpoint_x = player.pos.x;
     player.checkpoint_y = player.pos.y;
+    player.checkpoint_room_row = current_room_row;
+    player.checkpoint_room_col = current_room_col;
     player.gravity_cooldown = 0.0; // 쿨타임 0으로 초기화   
 }
 

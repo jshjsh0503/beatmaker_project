@@ -69,6 +69,8 @@ typedef struct {
     // ★ [추가] 체크포인트 및 기믹용 변수
     int checkpoint_x;       // 저장된 부활 위치 X
     int checkpoint_y;       // 저장된 부활 위치 Y
+    int checkpoint_room_row;  // 체크포인트가 위치한 방의 행 인덱스
+    int checkpoint_room_col;  // 체크포인트가 위치한 방의 열 인덱스
     double gravity_cooldown; // 중력 반전 쿨타임 (초 단위)
 } Entity;
 

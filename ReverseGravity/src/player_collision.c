@@ -4,6 +4,7 @@
 #include "player_collision.h"
 #include "player_death.h"
 #include "scene_title.h"
+#include "map.h"
 
 int get_tile_at(int tx, int ty) {
     if (tx < 0 || tx >= MAP_WIDTH || ty < 0 || ty >= MAP_HEIGHT) return TILE_EMPTY;
@@ -145,6 +146,10 @@ void check_interactive_tiles(void)
         // (플레이어가 깃발 위치에 정확히 오도록 타일 좌표 기반으로 저장)
         player.checkpoint_x = tx * TILE_SIZE;
         player.checkpoint_y = ty * TILE_SIZE;
+
+        // ★★★ 추가됨: 체크포인트가 속한 방(row, col)도 저장해야 부활이 정상 동작함
+        player.checkpoint_room_row = current_room_row;   // ★
+        player.checkpoint_room_col = current_room_col;   // ★
         
         // (선택) 닿았다는 효과음이나 시각 효과를 넣을 수도 있음
     }
