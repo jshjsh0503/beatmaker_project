@@ -5,6 +5,7 @@
 #include "player_death.h"
 #include "scene_title.h"
 #include "map.h"
+#include "gravity.h"
 
 int get_tile_at(int tx, int ty) {
     if (tx < 0 || tx >= MAP_WIDTH || ty < 0 || ty >= MAP_HEIGHT) return TILE_EMPTY;
@@ -159,6 +160,8 @@ void check_interactive_tiles(void)
         // 쿨타임이 0일 때만 작동 (연속 작동 방지)
         if (player.gravity_cooldown <= 0.0) {
             player.gravity_inverted = !player.gravity_inverted; // 중력 반전
+
+            player.v_y = player.gravity_inverted ? -GRAVITY : GRAVITY;
             
             // 이미지 변경
             if (player.gravity_inverted)

@@ -3,7 +3,7 @@
 #include "gravity.h"
 #include "player_collision.h"
 
-#define GRAVITY 4500.0
+
 #define GROUND_Y (SCREEN_HEIGHT - TILE_SIZE)
 #define CEILING_Y 0
 
@@ -11,9 +11,17 @@ void gravity_inverted(double dt)
 {
     double g_dir = player.gravity_inverted ? -1.0 : 1.0;
 
-    if (!player.is_grounded)
-        player.v_y += GRAVITY * g_dir * dt;
+    // 바닥/천장에 닿아 있는 상태라면 속도는 0
+    if (player.is_grounded)
+    {
+        player.v_y = 0;
+        return;
+    }
 
+    // ⭐ 가속도 적용 X → 일정 속도 유지
+    player.v_y = GRAVITY * g_dir;
+
+    // 이동
     player.pos.y += (int)(player.v_y * dt);
 }
 
