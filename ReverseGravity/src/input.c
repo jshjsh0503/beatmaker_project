@@ -91,18 +91,18 @@ void ResponseKeyDown(SDL_KeyboardEvent *event) {
                 // player.gravity_inverted = !player.gravity_inverted;
                 // player.v_y = -player.v_y;
                 // player.gravity_inverted = !player.gravity_inverted;
-                if (!player.is_grounded)
-                break;
+                // if (!player.is_grounded)
+                // break;
 
-                // 2) 중력 반전 (단 한 번만!)
-                player.gravity_inverted = !player.gravity_inverted;
+                // // 2) 중력 반전 (단 한 번만!)
+                // player.gravity_inverted = !player.gravity_inverted;
 
-                // 3) 속도 반전 (위 → 아래 / 아래 → 위)
-                player.v_y = -player.v_y;
+                // // 3) 속도 반전 (위 → 아래 / 아래 → 위)
+                // player.v_y = -player.v_y;
 
-                // 4) 이제 player.is_grounded 는 false 로 설정
-                //    플레이어는 점프처럼 떠오를 것이기 때문
-                player.is_grounded = 0;
+                // // 4) 이제 player.is_grounded 는 false 로 설정
+                // //    플레이어는 점프처럼 떠오를 것이기 때문
+                // player.is_grounded = 0;
 
                 break;
             // ESC 키를 눌러도 종료되도록 처리 (옵션)

@@ -12,14 +12,41 @@ void ActGame(void)
 {
     const double dt = 1.0 / 60.0;
 
+    // ---------------------------------------
+    // 중력 반전 (SPACE 사용)
+    // ---------------------------------------
+    if (app.key_space && player.is_grounded)
+    {
+        player.gravity_inverted = !player.gravity_inverted;
+
+        if (player.gravity_inverted)
+            player.texture = player_texture_reverse;
+        else
+            player.texture = player_texture_normal;
+
+        app.key_space = 0;   // SPACE 입력 초기화
+    }
+
+    // ---------------------------------------
+    // 가로 이동
+    // ---------------------------------------
     move_player_horzontal(dt);
 
-    if (app.key_up && player.is_grounded) {
+    // ---------------------------------------
+    // 점프 (DOWN 사용)
+    // ---------------------------------------
+    if (app.key_down && player.is_grounded)
+    {
         double jump_dir = player.gravity_inverted ? 1.0 : -1.0;
         player.v_y = JUMP_SPEED * jump_dir;
         player.is_grounded = 0;
+
+        app.key_down = 0;  // 점프 입력 초기화
     }
 
+    // ---------------------------------------
+    // 중력 및 충돌 처리
+    // ---------------------------------------
     gravity_inverted(dt);
     resolve_vertical_collision();
 

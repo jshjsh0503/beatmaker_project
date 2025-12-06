@@ -130,7 +130,10 @@ App app;
 Entity player;
 
 // 타일 텍스처 전역 정의 (defs.h 에 extern 있음)
-SDL_Texture* g_tile_textures[3];
+SDL_Texture* g_tile_textures[10];
+
+SDL_Texture* player_texture_normal = NULL;
+SDL_Texture* player_texture_reverse = NULL;
 
 // 폰트 전역 정의 (scene_title.c 에서 extern)
 TTF_Font* font_normal = NULL;
@@ -201,6 +204,8 @@ void InitSDL(void) {
     // 타일 그래픽 로드
     load_tile_texture(&g_tile_textures[TILE_FLOOR], "./gfx/floor_tile.png");
     load_tile_texture(&g_tile_textures[TILE_SPIKE], "./gfx/spike.png");
+    load_tile_texture(&g_tile_textures[TILE_GOAL], "./gfx/GoalPoint.png");
+    load_tile_texture(&g_tile_textures[TILE_START], "./gfx/StartPoint.png");
 
     // 사운드 초기화
     if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
@@ -235,17 +240,46 @@ void QuitSDL(void)
 // ----------------------------------------
 // 플레이어 텍스처 로드
 // ----------------------------------------
-void InitPlayer(void) {
-    SDL_Texture* player_tex;
 
-    load_tile_texture(&player_tex, "./gfx/Player.png");
-    player.texture = player_tex;
+void PlacePlayerAtStart(void)
+{
+    for (int y = 0; y < MAP_HEIGHT; y++)
+    {
+        for (int x = 0; x < MAP_WIDTH; x++)
+        {
+            if (g_map_data[y][x] == TILE_START)
+            {
+                player.pos.x = x * TILE_SIZE;
+                player.pos.y = y * TILE_SIZE;
 
+                return; // 하나만 찾으면 바로 종료
+            }
+        }
+    }
+
+    // 만약 StartPoint가 없을 경우 디폴트 위치
+    printf("[WARN] StartPoint tile not found! Using default position.\n");
     player.pos.x = SCREEN_WIDTH / 4;
     player.pos.y = SCREEN_HEIGHT / 4;
-    player.health = 1;
+}
 
-    SDL_QueryTexture(player.texture, NULL, NULL, &player.pos.w, &player.pos.h);
+void InitPlayer(void) {
+
+    // 두 이미지 모두 로드해두기
+    load_tile_texture(&player_texture_normal, "./gfx/Player.png");
+    load_tile_texture(&player_texture_reverse, "./gfx/ReversePlayer.png");
+
+    // 처음에는 일반 이미지 사용
+    player.texture = player_texture_normal;
+
+    // 플레이어 위치를 StartPoint 위치로 설정
+    PlacePlayerAtStart();
+
+    // 원본 크기 적용이 아니라, 너가 원하는 크기로 강제 설정
+    player.pos.w = PLAYER_WIDTH;
+    player.pos.h = PLAYER_HEIGHT;
+
+    player.health = 1;
 }
 
 // ----------------------------------------

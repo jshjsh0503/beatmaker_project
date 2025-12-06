@@ -20,10 +20,16 @@
 #define MAP_WIDTH 25            // 맵의 가로 타일 개수
 #define MAP_HEIGHT 20           // 맵의 세로 타일 개수
 
+#define PLAYER_WIDTH  64
+#define PLAYER_HEIGHT 64
+
 // 타일 종류 정의 (0: 빈 공간, 1: 바닥, 2: 가시 등)
 #define TILE_EMPTY 0          // 빈 공간 (투명)
 #define TILE_FLOOR 1          // 일반 바닥/벽 (밟을 수 있음)
 #define TILE_SPIKE 2          // 가시 함정 (밟으면 사망)
+
+#define TILE_START 8
+#define TILE_GOAL 9   // GoalPoint 타일 추가
 
 // ----------------------------------------
 // 구조체 정의
@@ -80,7 +86,10 @@ extern Mix_Chunk *death_effect;
 
 // 맵 관련 전역 변수
 extern int g_map_data[MAP_HEIGHT][MAP_WIDTH];
-extern SDL_Texture* g_tile_textures[3]; // TILE_EMPTY, TILE_FLOOR, TILE_SPIKE 텍스처 저장
+extern SDL_Texture* g_tile_textures[10]; // TILE_EMPTY, TILE_FLOOR, TILE_SPIKE 텍스처 저장
+
+extern SDL_Texture* player_texture_normal;
+extern SDL_Texture* player_texture_reverse;
 
 // ----------------------------------------
 // 링커 오류 방지를 위해 임시로 Mix_Chunk, TTF_Font 포인터 선언
