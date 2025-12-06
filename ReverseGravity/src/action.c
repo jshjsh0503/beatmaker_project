@@ -82,10 +82,7 @@ void ActGameOver(void) {
     if(app.key_r){
         // ★ [수정] InitPlayer()를 부르면 텍스처를 또 로드하니까, 
         // 변수만 초기화하는 방식으로 변경하는 게 좋아.
-        
-        // 1. 체크포인트가 있는 방을 다시 로드하고,
         LoadRoom(player.checkpoint_room_row, player.checkpoint_room_col);
-
         // 1. 위치를 저장된 체크포인트로!
         player.pos.x = player.checkpoint_x;
         player.pos.y = player.checkpoint_y;

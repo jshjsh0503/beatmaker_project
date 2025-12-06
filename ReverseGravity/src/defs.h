@@ -1,4 +1,3 @@
-// src/defs.h
 #pragma once
 
 #include <SDL2/SDL.h>
@@ -23,7 +22,7 @@
 #define PLAYER_WIDTH  64
 #define PLAYER_HEIGHT 64
 
-// ★ 타일 종류 정의 (4번, 5번 추가)
+// ★ 타일 종류 정의 (기존 + Speed 추가)
 #define TILE_EMPTY 0          
 #define TILE_FLOOR 1          
 #define TILE_SPIKE 2          // 바닥 가시 (위쪽 방향)
@@ -33,7 +32,8 @@
 #define TILE_CHECKPOINT 6     // 깃발 (체크포인트)
 #define TILE_GRAVITY_STRING 7 // 중력 반전 실
 #define TILE_START 8
-#define TILE_GOAL 9   
+#define TILE_GOAL 9
+#define TILE_SPEED 10         // ★ [추가] 속도 증가 타일
 
 // ----------------------------------------
 // 구조체 정의
@@ -66,7 +66,7 @@ typedef struct {
     int is_grounded;        
     int gravity_inverted;   
 
-    // ★ [추가] 체크포인트 및 기믹용 변수
+    // ★ 체크포인트 및 기믹용 변수
     int checkpoint_x;       // 저장된 부활 위치 X
     int checkpoint_y;       // 저장된 부활 위치 Y
     int checkpoint_room_row;  // 체크포인트가 위치한 방의 행 인덱스
@@ -90,7 +90,7 @@ extern Mix_Music *bgm;
 extern Mix_Chunk *death_effect;
 
 extern int g_map_data[MAP_HEIGHT][MAP_WIDTH];
-extern SDL_Texture* g_tile_textures[10]; 
+extern SDL_Texture* g_tile_textures[11]; // ★ [수정] 10 -> 11
 
 extern SDL_Texture* player_texture_normal;
 extern SDL_Texture* player_texture_reverse;

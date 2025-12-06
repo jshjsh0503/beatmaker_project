@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -20,11 +19,10 @@ Entity player;
 Camera camera = {0, 0};
 
 // 타일 텍스처 전역 정의 (defs.h 에 extern 있음)
-SDL_Texture* g_tile_textures[10];
+SDL_Texture* g_tile_textures[11]; // ★ [수정] 10 -> 11
 
 SDL_Texture* player_texture_normal = NULL;
 SDL_Texture* player_texture_reverse = NULL;
-
 
 // 폰트 전역 정의 (scene_title.c 에서 extern)
 TTF_Font* font_normal = NULL;
@@ -98,6 +96,11 @@ void InitSDL(void) {
     load_tile_texture(&g_tile_textures[TILE_SPIKE], "./gfx/spike.png");
     load_tile_texture(&g_tile_textures[TILE_GOAL], "./gfx/GoalPoint.png");
     load_tile_texture(&g_tile_textures[TILE_START], "./gfx/StartPoint.png");
+    load_tile_texture(&g_tile_textures[TILE_CHECKPOINT], "./gfx/CheckPoint.png"); 
+    load_tile_texture(&g_tile_textures[TILE_GRAVITY_STRING], "./gfx/String.png");
+
+    // ★ [추가] Speed 타일 이미지 로드 (파일 경로 확인 필수!)
+    load_tile_texture(&g_tile_textures[TILE_SPEED], "./gfx/Speed.png");
 
     // 사운드 초기화
     if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
@@ -115,13 +118,6 @@ void InitSDL(void) {
         printf("사운드 로드 실패: %s\n", Mix_GetError());
         exit(1);
     }
-    load_tile_texture(&g_tile_textures[TILE_GOAL], "./gfx/GoalPoint.png");
-    load_tile_texture(&g_tile_textures[TILE_START], "./gfx/StartPoint.png");
-
-    // ★ [추가] 깃발과 실 이미지 로드
-    // (이미지 파일명은 실제 파일명에 맞게 수정해!)
-    load_tile_texture(&g_tile_textures[TILE_CHECKPOINT], "./gfx/CheckPoint.png"); 
-    load_tile_texture(&g_tile_textures[TILE_GRAVITY_STRING], "./gfx/String.png");
 }
 
 // ----------------------------------------
@@ -137,9 +133,8 @@ void QuitSDL(void)
 }
 
 // ----------------------------------------
-// 플레이어 텍스처 로드
+// 플레이어 초기화 관련
 // ----------------------------------------
-
 void PlacePlayerAtStart(void)
 {
     for (int y = 0; y < MAP_HEIGHT; y++)
@@ -150,8 +145,7 @@ void PlacePlayerAtStart(void)
             {
                 player.pos.x = x * TILE_SIZE;
                 player.pos.y = y * TILE_SIZE;
-
-                return; // 하나만 찾으면 바로 종료
+                return; 
             }
         }
     }
@@ -163,7 +157,6 @@ void PlacePlayerAtStart(void)
 }
 
 void InitPlayer(void) {
-
     // 두 이미지 모두 로드해두기
     load_tile_texture(&player_texture_normal, "./gfx/Player.png");
     load_tile_texture(&player_texture_reverse, "./gfx/ReversePlayer.png");
@@ -174,26 +167,16 @@ void InitPlayer(void) {
     // 플레이어 위치를 StartPoint 위치로 설정
     PlacePlayerAtStart();
 
-    // 원본 크기 적용이 아니라, 너가 원하는 크기로 강제 설정
-    player.pos.w = PLAYER_WIDTH;
-    player.pos.h = PLAYER_HEIGHT;
-
-    player.health = 1;
-
-    player.texture = player_texture_normal;
-    PlacePlayerAtStart();
-
     player.pos.w = PLAYER_WIDTH;
     player.pos.h = PLAYER_HEIGHT;
     player.health = 1;
 
-    // ★ [추가] 게임 시작 시 체크포인트를 현재 시작 위치로 설정
+    // 게임 시작 시 체크포인트를 현재 시작 위치로 설정
     player.checkpoint_x = player.pos.x;
     player.checkpoint_y = player.pos.y;
     player.checkpoint_room_row = current_room_row;
     player.checkpoint_room_col = current_room_col;
-    player.gravity_cooldown = 0.0; // 쿨타임 0으로 초기화   
+    player.gravity_cooldown = 0.0; 
 }
 
-// ----------------------------------------
 void InitTiles(void) {}
