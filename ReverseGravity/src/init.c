@@ -175,7 +175,8 @@ void InitSDL(void) {
     if (!app.window) { printf("창 생성 실패: %s\n", SDL_GetError()); exit(1); }
 
     // 렌더러 생성
-    app.renderer = SDL_CreateRenderer(app.window, -1, SDL_RENDERER_ACCELERATED);
+    app.renderer = SDL_CreateRenderer(app.window,-1,SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+
     if (!app.renderer) { printf("렌더러 생성 실패: %s\n", SDL_GetError()); exit(1); }
 
     // 이미지 초기화
@@ -208,12 +209,12 @@ void InitSDL(void) {
     load_tile_texture(&g_tile_textures[TILE_START], "./gfx/StartPoint.png");
 
     // 사운드 초기화
-    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
+    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 8192) < 0) {
         printf("SDL_mixer 초기화 실패: %s\n", Mix_GetError());
         exit(1);
     }
 
-    interface_bgm = Mix_LoadMUS("sound/interfaceBGM.mp3");
+    interface_bgm = Mix_LoadMUS("sound/interfaceBGM.wav");
     if (!interface_bgm) {
         printf("interface.mp3 로드 실패: %s\n", Mix_GetError());
     }
