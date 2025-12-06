@@ -1,65 +1,42 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include <string.h> // InitMemorySet을 위해 필요 (init.c에 정의되어 있지만, 안전을 위해 포함)
+#include <string.h>
 
-#include "defs.h"    // <-- 1. 프로젝트의 모든 상수 및 구조체 정의
-#include "init.h"    // <-- 2. 초기화 함수 선언 (InitMemorySet 포함)
+#include "defs.h"
+#include "init.h"
 #include "draw.h"
 #include "action.h"
 #include "input.h"
 #include "scene_title.h"
 
-
-// ----------------------------------------
-// 전역 변수 정의
-// ----------------------------------------
-// App app;
-// Entity player;
 Mix_Music *bgm;
 extern Mix_Chunk *death_effect;
 
-// 타일 텍스처 배열 정의 (defs.h에서 extern으로 선언됨)
-// SDL_Texture* g_tile_textures[3] = {NULL};
-
-// 맵 데이터 정의 (defs.h에서 extern으로 선언됨)
-// 0: 빈 공간, 1: 바닥, 2: 가시
+// ★ 맵 데이터 수정 (천장에 3번 타일 배치)
 int g_map_data[MAP_HEIGHT][MAP_WIDTH] =
 {
-    // ===== 상단 확장부 (5줄): 천장 구조 유지 =====
+    // Row 0: 천장
     {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+    // Row 1: 천장 바로 아래
     {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+    
+    // Row 2: ★ 여기에 3번(거꾸로 가시) 배치 테스트!
+    {1,0,0,0,0,0,0,0,0,0,3,3,3,3,3,0,0,0,0,0,0,0,0,0,1},
 
-    // ===== 기존 맵 1행 (천장 가시) =====
-    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,9,0,0,0,0,0},
-
-    // ===== 기존 맵 2행 =====
-    {1,0,0,0,0,0,0,0,2,2,2,0,0,0,0,0,0,0,0,1,0,0,0,0,1},
-
-    // ===== 기존 맵 3행 =====
+    // Row 3~19 (나머지는 0 또는 기존 맵 유지)
+    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,9,0,0,0,0,0}, // Goal
+    {1,0,0,0,0,0,0,0,2,2,2,0,0,0,0,0,0,0,0,1,0,0,0,0,1}, // 바닥 가시
     {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1},
-
-    // ===== 기존 맵 4행 =====
-    {1,0,0,0,0,0,0,8,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1},
-
-    // ===== 기존 맵 5행 (가운데 플랫폼) =====
+    {1,0,0,0,0,0,0,8,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1}, // Start
     {1,0,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,0,0,1,0,0,0,0,1},
-
-    // ===== 기존 맵 6~8행 =====
     {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1},
     {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1},
     {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1},
-
-    // ===== 기존 맵 9행 (바닥 스파이크) =====
     {1,1,1,1,1,1,1,2,2,2,1,1,1,1,1,1,1,1,1,1,0,0,0,0,1},
-
-    // ===== 기존 맵 10행 (바닥) =====
-    {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,1},
-
-    // ===== 하단 확장부 (5줄): 바닥 구조 유지 =====
+    {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,1}, // 바닥
     {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
     {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
     {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
@@ -67,81 +44,42 @@ int g_map_data[MAP_HEIGHT][MAP_WIDTH] =
     {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
 };
 
-    GameState game_state = STATE_TITLE;
-// ----------------------------------------
-// 메인 함수
-// ----------------------------------------
+GameState game_state = STATE_TITLE;
+
 int main(void) {
-    // 1. 초기화 (이 함수를 찾지 못하고 있습니다.)
     InitMemorySet(); 
     InitSDL();
     InitPlayer();
-
-
     title_init();    
     
-    // 2. 프로그램 무한 루프 (메인 게임 루프)
     for (;;) {
-    ClearWindow();
+        ClearWindow();
 
-    // ★ ENDING 상태에서는 ESC만 받는다
-    if (game_state == STATE_ENDING) 
-    {
-        SDL_Event event;
-        while (SDL_PollEvent(&event))
+        if (game_state == STATE_ENDING) 
         {
-            if (event.type == SDL_QUIT)
-                QuitSDL();
-
-            if (event.type == SDL_KEYDOWN &&
-                event.key.keysym.scancode == SDL_SCANCODE_ESCAPE)
-            {
-                QuitSDL();     // 또는 game_state = STATE_EXIT;
+            SDL_Event event;
+            while (SDL_PollEvent(&event)) {
+                if (event.type == SDL_QUIT) QuitSDL();
+                if (event.type == SDL_KEYDOWN && event.key.keysym.scancode == SDL_SCANCODE_ESCAPE) QuitSDL();
             }
         }
+        else GetInput();
+
+        switch (game_state) 
+        {
+            case STATE_TITLE: title_update(); title_render(); break;
+            case STATE_GAME: ActGame(); DrawGame(); break;
+            case STATE_GAMEOVER: ActGameOver(); DrawGameOver(); break;
+            case STATE_ENDING: DrawEnding(); break;
+            case STATE_EXIT: QuitSDL(); exit(0);
+        }
+
+        ShowWindow();
+        SDL_Delay(16);
     }
-    else 
-    {
-        GetInput();  // 평소 입력 처리
-    }
-
-    switch (game_state) 
-    {
-        case STATE_TITLE:
-            title_update();
-            title_render();
-            break;
-
-        case STATE_GAME:
-            ActGame();
-            DrawGame();
-            break;
-
-        case STATE_GAMEOVER:
-            ActGameOver();
-            DrawGameOver();
-            break;
-
-        case STATE_ENDING:
-            DrawEnding();
-            break;
-
-        case STATE_EXIT:
-            QuitSDL();
-            exit(0);
-    }
-
-    ShowWindow();
-    SDL_Delay(16);
-}
-    
     return 0;
 }
 
-
-// ----------------------------------------
-// 링커 오류 방지를 위한 더미 함수 정의 (main.c가 호출하지만 로직이 없는 함수들)
-// ----------------------------------------
 void InitGameOver(void) {}
 void InitBullet(void) {}
 void InitScoreBoard(void) {}
