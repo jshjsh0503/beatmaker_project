@@ -6,6 +6,8 @@
 // 이 선언을 추가하면 DrawGame에서 RenderEntity를 사용할 때 경고가 사라집니다.
 void RenderEntity(Entity *object); 
 
+extern TTF_Font* font_normal;
+
 // ... (DrawMap 함수 등 기존 코드 유지)
 // ----------------------------------------
 // 맵 렌더링 함수 (새로 추가)
@@ -46,10 +48,40 @@ void DrawGame(void) {
 // ----------------------------------------
 // DrawGameOver 함수는 임시로 비워둠 (링커 오류 방지)
 // ----------------------------------------
-void DrawGameOver(void) {
-    // 게임 오버 시 화면을 검은색으로 지우고 끝 (나중에 게임 오버 UI 추가)
+void DrawGameOver(void) 
+{
+    // 1) 배경을 검은색으로 채움
     SDL_SetRenderDrawColor(app.renderer, 0x00, 0x00, 0x00, 0xFF);
     SDL_RenderClear(app.renderer);
+
+    // 2) 출력할 텍스트 설정
+    const char* msg = "Press R to Restart";
+
+    SDL_Color color = {255, 255, 255, 255};  // 흰색
+
+    // 3) SDL_ttf로 문자열 렌더링하여 surface 생성
+    SDL_Surface* surface = TTF_RenderText_Solid(font_normal, msg, color);
+    if (!surface) {
+        printf("TTF_RenderText_Solid error: %s\n", TTF_GetError());
+        return;
+    }
+
+    // 4) surface → texture 변환
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(app.renderer, surface);
+
+    // 5) 출력 위치 설정
+    SDL_Rect dest;
+    dest.w = surface->w;
+    dest.h = surface->h;
+    dest.x = (SCREEN_WIDTH - dest.w) / 2;   // 화면 중앙
+    dest.y = (SCREEN_HEIGHT - dest.h) / 2;  // 화면 중앙
+
+    // 6) 화면에 렌더링
+    SDL_RenderCopy(app.renderer, texture, NULL, &dest);
+
+    // 7) 리소스 정리
+    SDL_FreeSurface(surface);
+    SDL_DestroyTexture(texture);
 }
 
 // RenderEntity 함수 (SDL_RenderCopy를 호출하는 핵심 함수)
